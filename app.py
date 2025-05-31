@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
@@ -29,9 +30,11 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
         conn = get_db_connection()
         user = conn.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password)).fetchone()
         conn.close()
+
         if user:
             session['username'] = username
             session['role'] = user['role']
@@ -97,4 +100,5 @@ def phong_moitruong():
     return render_template('phong_moitruong.html')
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
