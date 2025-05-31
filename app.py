@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
@@ -12,12 +11,14 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+# Bắt buộc đăng nhập
 @app.before_request
 def require_login():
     allowed_routes = ['login', 'static']
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect(url_for('login'))
 
+# Trang chủ
 @app.route('/')
 def index():
     conn = get_db_connection()
@@ -25,16 +26,15 @@ def index():
     conn.close()
     return render_template("index.html", logs=logs)
 
+# Đăng nhập
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-
         conn = get_db_connection()
         user = conn.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password)).fetchone()
         conn.close()
-
         if user:
             session['username'] = username
             session['role'] = user['role']
@@ -43,11 +43,13 @@ def login():
             flash("Sai tên đăng nhập hoặc mật khẩu", "danger")
     return render_template('login.html')
 
+# Đăng xuất
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login'))
 
+# Dashboard / Biểu đồ
 @app.route("/dashboard")
 def dashboard():
     return render_template("dashboard.html")
@@ -60,6 +62,7 @@ def chart():
 def weekly_stats():
     return render_template("weekly_stats.html")
 
+# ===== Các phòng =====
 @app.route('/phong-caymo', methods=['GET', 'POST'])
 def phong_caymo():
     if request.method == 'POST':
@@ -99,6 +102,7 @@ def phong_moitruong():
         return redirect(url_for('phong_moitruong'))
     return render_template('phong_moitruong.html')
 
+# Chạy app (hỗ trợ Render)
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
