@@ -1,1 +1,10 @@
-{% extends 'base.html' %}{% block content %}Đăng nhập{% endblock %}
+<!-- login.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h2>Đăng nhập</h2>
+<form method='POST'>
+    <input name='username'>
+    <input name='password' type='password'>
+    <button type='submit'>Đăng nhập</button>
+</form>
+{% endblock %}
