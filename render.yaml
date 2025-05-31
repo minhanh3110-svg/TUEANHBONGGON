@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: flask-lab-app
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python app.py"
+    plan: free
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        value: your-secret-key
+      - key: DATABASE_URL
+        value: sqlite:///lab_app.db
+    autoDeploy: true
